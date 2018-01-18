@@ -1,0 +1,120 @@
+create table categories(
+	categoryId int auto_increment,
+	categoryName varchar(50),
+	categoryDescription varchar(1000),
+	categoryImage_url varchar(50),
+	categoryIsAvailable boolean,
+	constraint pk_category_id primary key (categoryId));
+
+alter table categories auto_increment=100;
+
+create table user_details(
+	userId int auto_increment,
+	first_name varchar(50),
+	last_name varchar(50),
+	role varchar(50),
+	enabled boolean,
+	password varchar(50),
+	email varchar(50),
+	phoneNo varchar(20),
+	constraint pk_user_id primary key (userId));
+
+alter table user_details auto_increment=200;
+
+create table books(
+	bookId int auto_increment,
+	bookISBN varchar(50) unique,
+	bookName varchar(50),
+	bookAuthorName varchar(50),
+	bookPrice decimal(10,2),
+	bookQuantity int,
+	bookIsAvailable boolean,
+	categoryId int,
+	publisherId int,
+	bookPurchases int,
+	bookViews int,
+	constraint pk_book_id primary key (bookId),
+	constraint fk_category_id foreign key (categoryId) references categories(categoryId),
+	constraint fk_publisher_id foreign key (publisherId) references publishers(publisherId));
+
+alter table books auto_increment=300;
+
+create table address(
+	addressId int auto_increment,
+	userId int,
+	addressLine varchar(1000),
+	city varchar(20),
+	state varchar(20),
+	country varchar(20),
+	postal_code int,
+	is_billing boolean,
+	is_shipping boolean,
+	constraint pk_address_id primary key (addressId),
+	constraint fk_address_user_id foreign key (userId) references user_details(userId));
+
+alter table address auto_increment=400;
+
+create table cart(
+	cartId int auto_increment,
+	userId int,
+	grand_total decimal(10,2),
+	cartLines int,
+	constraint pk_cart_id primary key(cartId),
+	constraint fk_cart_user_id foreign key(userId) references user_details(userId));
+
+alter table cart auto_increment=500;
+
+create table cart_line(
+	cartLineId int auto_increment,
+	cartId int,
+	cartLineTotal decimal(10,2),
+	bookId int,
+	bookCount int,
+	buyingPrice decimal(10,2),
+	is_available boolean,
+	constraint pk_cartline_id primary key(cartLineId),
+	constraint fk_cartline_book_id foreign key(bookId) references books(bookId));
+
+alter table cart_line auto_increment=600;
+
+create table order_details(
+	orderId int auto_increment,
+	userId int,
+	order_total decimal(10,2),
+	order_count int,
+	shipping_id int,
+	billing_id int,
+	orderDate date,
+	constraint pk_order_id primary key (orderId),
+	constraint fk_order_details_user_id foreign key (userId) references user_details(userId),
+	constraint fk_order_details_billing_id foreign key (billing_id) references address(addressId),
+	constraint fk_order_details_shipping_id foreign key (shipping_id) references address(addressId));
+
+alter table order_details auto_increment=700;
+
+
+create table order_items(
+	orderItemId int auto_increment,
+	orderId int,
+	orderItemsTotal decimal(10,2),
+	bookId int,
+	bookCount int,
+	buying_price decimal(10,2),
+	constraint pk_order_item_id primary key(orderItemId),
+	constraint fk_order_details_book_id foreign key(bookId) references books(bookId),
+	constraint fk_order_details_order_id foreign key(orderId) references order_details(orderId));
+
+
+alter table order_items auto_increment=800;
+
+create table publishers(
+	publisherId int auto_increment,
+	publisherName varchar(50),
+	constraint pk_publisher_id primary key(publisherId));
+	
+
+alter table publishers auto_increment=900;	
+	
+	
+	
+	
